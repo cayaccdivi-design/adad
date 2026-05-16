@@ -13,6 +13,8 @@ import CollagePage from './pages/CollagePage'
 import IntroPage from './pages/IntroPage'
 import AnnouncementsPage from './pages/AnnouncementsPage'
 import SourcePage from './pages/SourcePage'
+import ComposerPage from './pages/ComposerPage'
+import AdminComposerPage from './pages/AdminComposerPage'
 import { useAuthStore } from './store/useAuthStore'
 
 function ProtectedRoute({ children }) {
@@ -37,6 +39,8 @@ export default function App() {
         <Route path="/intro" element={<IntroPage />} />
         <Route path="/announcements" element={<AnnouncementsPage />} />
         <Route path="/source" element={<SourcePage />} />
+        <Route path="/composer" element={<ProtectedRoute><ComposerPage /></ProtectedRoute>} />
+        <Route path="/admin/composer" element={<ProtectedRoute><AdminComposerPage /></ProtectedRoute>} />
       </Route>
       <Route path="/editor/:productId" element={<ProtectedRoute><CustomerEditorPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />

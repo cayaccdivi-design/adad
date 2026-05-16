@@ -3,23 +3,26 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, ShoppingBag, Gift, Scissors,
   FolderOpen, LogOut, X, ChevronLeft, ChevronRight,
-  Sparkles, Zap, Layers, LayoutGrid, Bell, Code2, BookOpen
+  Sparkles, Zap, Layers, LayoutGrid, Bell, Code2, BookOpen,
+  ImagePlus, Shield
 } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useAppStore } from '../../store/useAppStore'
 import clsx from 'clsx'
 
 const NAV_ITEMS = [
-  { to: '/',           icon: LayoutDashboard, label: 'Dashboard',  end: true },
-  { to: '/shop',       icon: ShoppingBag,     label: 'Cửa hàng' },
-  { to: '/gift',       icon: Gift,            label: 'Hộp quà',    badge: 'HOT' },
-  { to: '/remove-bg',  icon: Scissors,        label: 'Xóa nền AI', badge: 'AI' },
-  { to: '/psd-editor', icon: Layers,          label: 'PSD Editor',  badge: 'NEW', adminOnly: true },
-  { to: '/collage',    icon: LayoutGrid,      label: 'Ghép ảnh',   badge: 'NEW' },
-  { to: '/resources',  icon: FolderOpen,      label: 'Tài nguyên' },
-  { to: '/intro',      icon: BookOpen,        label: 'Giới thiệu' },
-  { to: '/announcements', icon: Bell,         label: 'Thông báo' },
-  { to: '/source',     icon: Code2,           label: 'Mã nguồn' },
+  { to: '/',                icon: LayoutDashboard, label: 'Dashboard',      end: true },
+  { to: '/shop',            icon: ShoppingBag,     label: 'Cửa hàng' },
+  { to: '/gift',            icon: Gift,            label: 'Hộp quà',        badge: 'HOT' },
+  { to: '/remove-bg',       icon: Scissors,        label: 'Xóa nền AI',     badge: 'AI' },
+  { to: '/composer',        icon: ImagePlus,       label: 'AI Composer',    badge: 'AI' },
+  { to: '/psd-editor',      icon: Layers,          label: 'PSD Editor',     badge: 'NEW', adminOnly: true },
+  { to: '/collage',         icon: LayoutGrid,      label: 'Ghép ảnh',       badge: 'NEW' },
+  { to: '/resources',       icon: FolderOpen,      label: 'Tài nguyên' },
+  { to: '/intro',           icon: BookOpen,        label: 'Giới thiệu' },
+  { to: '/announcements',   icon: Bell,            label: 'Thông báo' },
+  { to: '/source',          icon: Code2,           label: 'Mã nguồn' },
+  { to: '/admin/composer',  icon: Shield,          label: 'Admin Composer', badge: 'ADMIN', adminOnly: true },
 ]
 
 export default function Sidebar() {
@@ -106,6 +109,7 @@ export default function Sidebar() {
                 <span className={clsx('text-[9px] font-bold px-1.5 py-0.5 rounded-full',
                   badge === 'AI' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                     : badge === 'NEW' ? 'bg-brand-500/20 text-brand-300 border border-brand-500/30'
+                    : badge === 'ADMIN' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                     : 'bg-rose-500/20 text-rose-300 border border-rose-500/30')}>
                   {badge}
                 </span>

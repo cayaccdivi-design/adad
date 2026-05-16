@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Image, Download, Trash2, Scissors, Loader, Sparkles, AlertCircle, CheckCircle } from 'lucide-react'
 import { useAppStore } from '../store/useAppStore'
+import PageGuide from '../components/ui/PageGuide'
 
 async function removeBg(imageFile) {
   // Dynamically load from CDN to avoid bundling the heavy WASM
@@ -109,13 +110,26 @@ export default function RemoveBgPage() {
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
+      <PageGuide
+        id="remove-bg"
+        title="Cách xóa nền ảnh nhanh bằng AI"
+        subtitle="AI tách nền chính xác cả tóc, lông động vật, viền lá. Hỗ trợ JPG, PNG, WebP tối đa 10MB."
+        tone="cyan"
+        steps={[
+          { icon: '⬆️', title: 'Upload ảnh', desc: 'Kéo thả hoặc click chọn ảnh từ máy.' },
+          { icon: '✨', title: 'Bấm xử lý', desc: 'AI sẽ tự động tách nền trong vài giây.' },
+          { icon: '👀', title: 'Xem kết quả', desc: 'Bật "So sánh" để check chất lượng tách.' },
+          { icon: '💾', title: 'Tải PNG trong suốt', desc: 'Click "Tải xuống" để lưu file PNG có alpha.' },
+        ]}
+      />
+
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <div className="inline-flex items-center gap-2 badge mb-3">
           <Scissors size={13} /> AI Tool
         </div>
         <h1 className="font-display text-3xl font-bold text-white mb-2">
-          Xóa nền <span className="grad">AI tự động</span>
+          Xóa nền <span className="grad-anim">AI tự động</span>
         </h1>
         <p className="text-white/40 text-sm">Tách nền ảnh chỉ trong vài giây với công nghệ AI tiên tiến</p>
       </motion.div>

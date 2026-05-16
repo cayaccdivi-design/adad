@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Upload, Download, Image, LayoutGrid, X, Trash2 } from 'lucide-react'
 import clsx from 'clsx'
+import PageGuide from '../components/ui/PageGuide'
 
 const LAYOUTS = [
   { id: 'h2',  label: '2 ngang',   cols: 2, rows: 1, slots: [{x:0,y:0,w:1,h:1},{x:1,y:0,w:1,h:1}] },
@@ -147,11 +148,24 @@ export default function CollagePage() {
 
   return (
     <div className="min-h-screen p-6 space-y-6" style={{ color: '#fff' }}>
+      <PageGuide
+        id="collage"
+        title="Hướng dẫn ghép ảnh collage"
+        subtitle="Tạo collage đẹp từ nhiều ảnh chỉ trong vài giây — chọn layout, upload ảnh và tải về."
+        tone="pink"
+        steps={[
+          { icon: '🖼️', title: 'Chọn layout', desc: 'Có nhiều bố cục: 2/3/4/6/9 ảnh, dạng grid, tile, mosaic.' },
+          { icon: '⬆️', title: 'Upload ảnh', desc: 'Click "Thêm ảnh" hoặc kéo thả ảnh vào ô tương ứng.' },
+          { icon: '🎨', title: 'Tùy chỉnh', desc: 'Đổi màu nền, gap, bo góc, kích thước canvas.' },
+          { icon: '⬇️', title: 'Tải PNG', desc: 'Bấm "Tải xuống" để lưu collage chất lượng cao.' },
+        ]}
+      />
+
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <LayoutGrid size={24} className="text-brand-400" />
-          Ghép ảnh
+          <LayoutGrid size={24} className="text-brand-400 icon-glow" />
+          <span className="grad-anim">Ghép ảnh</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Tạo ảnh ghép từ nhiều ảnh với nhiều bố cục khác nhau</p>
       </motion.div>

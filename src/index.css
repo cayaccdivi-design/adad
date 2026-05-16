@@ -140,6 +140,11 @@
   }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 @layer utilities {
   .text-muted { color: rgba(255,255,255,0.45); }
   .text-soft  { color: rgba(255,255,255,0.65); }

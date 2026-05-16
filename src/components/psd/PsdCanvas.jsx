@@ -225,11 +225,15 @@ const PsdCanvas = forwardRef(function PsdCanvas(
       if (e.code === 'Space' && !e.repeat) setIsPanning(true)
     }
     const onKeyUp = (e) => { if (e.code === 'Space') setIsPanning(false) }
+    // Also handle global mouseup to stop panning even if cursor leaves the stage
+    const onGlobalMouseUp = () => { lastPanPos.current = null }
     window.addEventListener('keydown', onKey)
     window.addEventListener('keyup', onKeyUp)
+    window.addEventListener('mouseup', onGlobalMouseUp)
     return () => {
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('keyup', onKeyUp)
+      window.removeEventListener('mouseup', onGlobalMouseUp)
     }
   }, [])
 

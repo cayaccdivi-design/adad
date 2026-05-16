@@ -396,6 +396,7 @@ export default function CustomerEditorPage() {
       downloadDataUrl(dataUrl, 'png')
       toast('Đã tải về thành công!', 'success', 'Download')
     } catch (err) {
+      console.warn('[CustomerEditor] canvas export failed, downloading original', err)
       downloadOriginal()
     }
   }, [product, customValues, toast, isAdmin, hasPaid])

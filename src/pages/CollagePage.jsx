@@ -146,7 +146,7 @@ export default function CollagePage() {
   }
 
   return (
-    <div className="min-h-screen p-6 space-y-6" style={{ color: '#fff' }}>
+    <div className="p-6 space-y-6" style={{ color: '#fff' }}>
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-2xl font-bold text-white flex items-center gap-3">

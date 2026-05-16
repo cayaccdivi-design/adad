@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import {
   Type, Image as ImageIcon, RotateCcw, Lock, Unlock,
   UploadCloud, Sparkles, Scissors, Box,
@@ -150,8 +150,23 @@ function FontUploader() {
 // TextControls — always visible. Disabled while `layer.locked` is true.
 // ---------------------------------------------------------------------------
 function TextControls({ layer, onChange, onReset, onToggleLock }) {
-  const fonts    = useFontStore(s => s.list())
+  const customFonts = useFontStore(s => s.custom)
   const disabled = layer.locked
+
+  // Build font list from system + custom fonts
+  const fonts = useMemo(() => {
+    const SYSTEM_FONTS = [
+      'Inter', 'Arial', 'Georgia', 'Times New Roman',
+      'Courier', 'Verdana', 'Impact', 'Tahoma', 'Helvetica',
+    ]
+    const c = customFonts.map(f => f.family)
+    const seen = new Set()
+    return [...SYSTEM_FONTS, ...c].filter(f => {
+      const k = f.toLowerCase()
+      if (seen.has(k)) return false
+      seen.add(k); return true
+    })
+  }, [customFonts])
 
   // wraps onChange so locked layers can't be mutated by mistake
   const safeChange = (changes) => {

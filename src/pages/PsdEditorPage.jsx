@@ -826,7 +826,7 @@ export default function PsdEditorPage() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history, fitZoom, psdMeta])
+  }, [history, fitZoom, psdMeta, selectedLayerId, moveLayer])
 
   // ── Publish ────────────────────────────────────────────────────────────────
   const handlePublish = () => {
@@ -952,7 +952,7 @@ export default function PsdEditorPage() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 4rem)', background: '#0a0a10' }}>
+    <div className="flex flex-col -mx-4 sm:-mx-6 -my-6" style={{ height: 'calc(100vh - 4rem)', background: '#0a0a10' }}>
       <Toolbar
         psdFile={psdFile}
         psdMeta={psdMeta}

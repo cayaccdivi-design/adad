@@ -174,3 +174,207 @@
   z-index: 0;
   opacity: 0.18;
 }
+
+
+/* ─── Modern Effects: Animated gradient text ─────────── */
+.grad-anim {
+  background: linear-gradient(110deg, #6e4bff 0%, #4dd0ff 25%, #2bf2c0 50%, #ff5edb 75%, #6e4bff 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradMove 6s linear infinite;
+}
+@keyframes gradMove {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* Shimmer text — light ray sweeping across text */
+.text-shine {
+  position: relative;
+  background: linear-gradient(110deg,
+    rgba(255,255,255,0.85) 30%,
+    rgba(255,255,255,1) 50%,
+    rgba(255,255,255,0.85) 70%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShine 3.2s ease-in-out infinite;
+}
+@keyframes textShine {
+  0%,100% { background-position: 100% 0; }
+  50%     { background-position: -100% 0; }
+}
+
+/* Glow pulse for icons */
+.icon-glow {
+  filter: drop-shadow(0 0 6px rgba(110,75,255,0.6));
+  animation: iconGlow 2.4s ease-in-out infinite;
+}
+@keyframes iconGlow {
+  0%,100% { filter: drop-shadow(0 0 6px rgba(110,75,255,0.5)); }
+  50%     { filter: drop-shadow(0 0 16px rgba(77,208,255,0.85)); }
+}
+
+/* Pulse ring around icon container */
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::before,
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: pulseRing 2.6s cubic-bezier(0.22,0.8,0.22,1) infinite;
+}
+.pulse-ring::after { animation-delay: 1.3s; }
+@keyframes pulseRing {
+  0%   { transform: scale(1);    opacity: 0.55; }
+  80%  { transform: scale(1.65); opacity: 0; }
+  100% { transform: scale(1.65); opacity: 0; }
+}
+
+/* Floating icon: gentle vertical bob */
+.icon-float {
+  animation: iconFloat 3.8s ease-in-out infinite;
+}
+@keyframes iconFloat {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-4px); }
+}
+
+/* 3D Tilt hover */
+.tilt-3d {
+  transition: transform 0.45s cubic-bezier(0.22,0.8,0.22,1);
+  transform-style: preserve-3d;
+}
+.tilt-3d:hover {
+  transform: perspective(900px) rotateX(2deg) rotateY(-2deg) translateY(-3px);
+}
+
+/* Animated underline */
+.under-anim {
+  background: linear-gradient(90deg, #6e4bff, #4dd0ff, #2bf2c0);
+  background-size: 0% 2px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.4s ease;
+  padding-bottom: 2px;
+}
+.under-anim:hover { background-size: 100% 2px; }
+
+/* Neon button glow */
+.btn-neon {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6e4bff, #4dd0ff);
+  box-shadow: 0 0 20px rgba(110,75,255,0.45), inset 0 0 12px rgba(255,255,255,0.18);
+  transition: all 0.3s ease;
+}
+.btn-neon::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.7s ease;
+}
+.btn-neon:hover { box-shadow: 0 0 32px rgba(110,75,255,0.7), 0 0 48px rgba(77,208,255,0.4); }
+.btn-neon:hover::before { left: 130%; }
+
+/* Particle dot bg */
+.bg-particles {
+  background-image:
+    radial-gradient(rgba(110,75,255,0.18) 1px, transparent 1px),
+    radial-gradient(rgba(77,208,255,0.12) 1px, transparent 1px);
+  background-size: 32px 32px, 56px 56px;
+  background-position: 0 0, 16px 16px;
+}
+
+/* Stripey diagonal moving */
+.bg-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.02) 0,
+    rgba(255,255,255,0.02) 14px,
+    transparent 14px,
+    transparent 28px
+  );
+  animation: stripeShift 20s linear infinite;
+}
+@keyframes stripeShift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 56px 0; }
+}
+
+/* Glow chip */
+.chip-glow {
+  position: relative;
+  overflow: hidden;
+}
+.chip-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(110,75,255,0.65) 60deg, transparent 120deg);
+  animation: spinSlow 4s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  pointer-events: none;
+}
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+
+/* Title block highlight */
+.title-block {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.title-block::before {
+  content: '';
+  width: 4px;
+  height: 22px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #6e4bff, #4dd0ff);
+  box-shadow: 0 0 12px rgba(110,75,255,0.6);
+}
+
+/* Reveal-on-scroll friendly */
+.reveal {
+  animation: revealUp 0.55s cubic-bezier(0.22,0.8,0.22,1) both;
+}
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Spotlight following hover (use with onMouseMove + CSS vars --x --y) */
+.spotlight {
+  position: relative;
+  overflow: hidden;
+}
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(360px circle at var(--x,50%) var(--y,50%),
+    rgba(110,75,255,0.18), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.spotlight:hover::before { opacity: 1; }

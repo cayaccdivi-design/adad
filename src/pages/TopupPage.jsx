@@ -4,6 +4,7 @@ import { Coins, QrCode, Copy, CheckCheck, X, Zap, Shield, Clock } from 'lucide-r
 import { useAuthStore } from '../store/useAuthStore'
 import { useAppStore } from '../store/useAppStore'
 import Modal from '../components/ui/Modal'
+import PageGuide from '../components/ui/PageGuide'
 
 const PACKAGES = [
   { amount: 20000,  bonus: 0,    label: '20.000đ',  popular: false, color: 'from-slate-600 to-slate-500' },
@@ -123,6 +124,19 @@ export default function TopupPage() {
 
   return (
     <div className="space-y-8">
+      <PageGuide
+        id="topup"
+        title="Cách nạp tiền vào tài khoản NOVA"
+        subtitle="Nạp càng nhiều, bonus càng cao. Tiền có thể dùng mua thumbnail, banner, logo trong cửa hàng."
+        tone="orange"
+        steps={[
+          { icon: '💎', title: 'Chọn gói', desc: 'Click gói nạp phù hợp. Gói cao có thưởng % bonus.' },
+          { icon: '📱', title: 'Quét QR', desc: 'Mở app ngân hàng, quét mã QR hiện ra.' },
+          { icon: '✏️', title: 'Đúng nội dung', desc: 'Đảm bảo nội dung CK đúng để hệ thống nhận diện.' },
+          { icon: '⏱️', title: 'Chờ 1-5 phút', desc: 'Số dư sẽ tự động cộng vào ví. Có thể bấm Demo để test.' },
+        ]}
+      />
+
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         className="text-center space-y-2">
@@ -130,7 +144,7 @@ export default function TopupPage() {
           <Coins size={13} /> Nạp tiền
         </div>
         <h1 className="font-display text-3xl font-bold text-white">
-          Chọn gói <span className="grad">nạp tiền</span>
+          Chọn gói <span className="grad-anim">nạp tiền</span>
         </h1>
         <p className="text-white/40 text-sm">Thanh toán qua QR code — nhanh chóng, an toàn</p>
         {user && (

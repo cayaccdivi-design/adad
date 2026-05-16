@@ -4,6 +4,7 @@ import { Gift, Copy, CheckCheck, Sparkles, Star, Zap, Crown, RefreshCw } from 'l
 import { useAuthStore } from '../store/useAuthStore'
 import { useAppStore } from '../store/useAppStore'
 import confetti from '../utils/confetti'
+import PageGuide from '../components/ui/PageGuide'
 
 const GIFT_ITEMS = [
   {
@@ -221,13 +222,26 @@ export default function GiftPage() {
 
   return (
     <div className="space-y-8">
+      <PageGuide
+        id="gift"
+        title="Hướng dẫn nhận quà & voucher"
+        subtitle="Nhận voucher giảm giá, mã quà tặng và phần thưởng độc quyền hàng ngày."
+        tone="green"
+        steps={[
+          { icon: '🎰', title: 'Quay số ngẫu nhiên', desc: 'Mỗi 10 giây được quay 1 lần để nhận mã từ 5%-50%.' },
+          { icon: '🎁', title: 'Chọn mã có sẵn', desc: 'Click "Nhận ngay" trên card quà bạn muốn.' },
+          { icon: '📋', title: 'Sao chép mã', desc: 'Mã sẽ hiện ra, bấm nút copy để sao chép.' },
+          { icon: '🛒', title: 'Áp dụng khi mua', desc: 'Dán mã vào ô voucher khi thanh toán tại Shop.' },
+        ]}
+      />
+
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <div className="inline-flex items-center gap-2 badge mb-3">
           <Gift size={13} /> Hộp quà & Voucher
         </div>
         <h1 className="font-display text-3xl font-bold text-white mb-2">
-          Nhận <span className="grad">quà miễn phí</span>
+          Nhận <span className="grad-anim">quà miễn phí</span>
         </h1>
         <p className="text-white/40 text-sm">Mã giảm giá, voucher và phần thưởng độc quyền dành cho bạn</p>
       </motion.div>

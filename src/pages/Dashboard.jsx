@@ -4,11 +4,12 @@ import { motion } from 'framer-motion'
 import {
   ShoppingBag, Gift, Scissors, FolderOpen, Layers,
   Coins, ArrowRight, Zap, Star, Sparkles,
-  Download, TrendingUp, LayoutDashboard,
+  Download, TrendingUp, LayoutDashboard, Wrench,
   Clock, Activity, CheckCircle2, LayoutGrid, MessageSquare,
 } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
 import { useAppStore } from '../store/useAppStore'
+import PageGuide from '../components/ui/PageGuide'
 
 /* ─── Stat Card ─────────────────────────────────────────── */
 function StatCard({ icon: Icon, label, value, change, trend, link, accent }) {
@@ -160,6 +161,7 @@ const QUICK_ACTIONS = [
   { to: '/gift',       icon: Gift,        label: 'Hộp quà',    desc: 'Voucher & mã giảm giá hàng ngày',    gradient: 'linear-gradient(135deg,#10b981,#2bf2c0)', badge: 'HOT'      },
   { to: '/remove-bg',  icon: Scissors,    label: 'Xóa nền AI', desc: 'Tách nền ảnh tự động chỉ 1 giây',    gradient: 'linear-gradient(135deg,#0ea5e9,#4dd0ff)', badge: 'AI'       },
   { to: '/collage',    icon: LayoutGrid,  label: 'Ghép ảnh',   desc: 'Ghép nhiều ảnh thành collage đẹp',   gradient: 'linear-gradient(135deg,#ec4899,#8b5cf6)', badge: 'NEW'      },
+  { to: '/tools',      icon: Wrench,      label: 'Công cụ',    desc: '8 tools tiện ích miễn phí cho designer', gradient: 'linear-gradient(135deg,#06b6d4,#10b981)', badge: 'NEW' },
   { to: '/psd-editor', icon: Layers,      label: 'PSD Editor', desc: 'Chỉnh sửa PSD trực tiếp trên web',   gradient: 'linear-gradient(135deg,#f59e0b,#ef4444)', badge: 'NEW', adminOnly: true },
   { to: '/resources',  icon: FolderOpen,  label: 'Tài nguyên', desc: '10,000+ PSD, icon, mockup miễn phí', gradient: 'linear-gradient(135deg,#8b5cf6,#7c3aed)', badge: null       },
 ]
@@ -241,6 +243,20 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
 
+      {/* ── Page Guide (top of every page) ── */}
+      <PageGuide
+        id="dashboard"
+        title="Chào mừng đến NOVA AI Studio!"
+        subtitle="Đây là trung tâm điều khiển — nơi bạn truy cập mọi tính năng, công cụ và tài nguyên thiết kế."
+        tone="purple"
+        steps={[
+          { icon: '🛍️', title: 'Cửa hàng', desc: 'Mua thumbnail, logo, banner PSD chất lượng cao.' },
+          { icon: '✂️', title: 'AI Tools', desc: 'Xóa nền, ghép ảnh, chỉnh PSD trực tiếp trên web.' },
+          { icon: '🎁', title: 'Hộp quà', desc: 'Mở hộp quà mỗi ngày để nhận voucher giảm giá.' },
+          { icon: '⭐', title: 'Cộng đồng', desc: 'Đọc & viết đánh giá trên trang Reviews.' },
+        ]}
+      />
+
       {/* ── Welcome Banner ── */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ ease: [0.22, 0.8, 0.22, 1] }}
@@ -274,8 +290,8 @@ export default function Dashboard() {
             </div>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight">
               Chào {user
-                ? <span className="grad">{user.name}</span>
-                : <span className="grad">bạn</span>}! 👋
+                ? <span className="grad-anim">{user.name}</span>
+                : <span className="grad-anim">bạn</span>}! 👋
             </h1>
             <p className="text-white/50 text-sm max-w-md leading-relaxed">
               {user
@@ -317,12 +333,14 @@ export default function Dashboard() {
         {/* Quick Actions - 3/4 width */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-5">
-            <div className="w-7 h-7 rounded-lg bg-brand-500/20 border border-brand-500/30 flex items-center justify-center">
-              <Zap size={14} className="text-brand-400" />
+            <div className="w-7 h-7 rounded-lg bg-brand-500/20 border border-brand-500/30 flex items-center justify-center pulse-ring text-brand-400">
+              <Zap size={14} className="icon-glow" />
             </div>
-            <h2 className="font-display text-base font-semibold text-white">Truy cập nhanh</h2>
+            <h2 className="font-display text-base font-semibold text-white">
+              <span className="grad-anim">Truy cập nhanh</span>
+            </h2>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 items-stretch">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 items-stretch">
             {QUICK_ACTIONS.map(({ to, icon, label, desc, gradient, badge, adminOnly }, i) => (
               (!adminOnly || isAdmin) && (
                 <motion.div key={to}
@@ -349,10 +367,12 @@ export default function Dashboard() {
           }}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
-                <Activity size={14} className="text-cyan-400" />
+              <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center pulse-ring text-cyan-400">
+                <Activity size={14} className="icon-glow" />
               </div>
-              <h2 className="font-display text-sm font-semibold text-white">Hoạt động</h2>
+              <h2 className="font-display text-sm font-semibold text-white">
+                <span className="grad-anim">Hoạt động</span>
+              </h2>
             </div>
             {user && (
               <div className="flex items-center gap-2">
@@ -407,10 +427,12 @@ export default function Dashboard() {
       {/* ── Features ── */}
       <div>
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-7 h-7 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center">
-            <Star size={13} className="text-yellow-400 fill-yellow-400" />
+          <div className="w-7 h-7 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center pulse-ring text-yellow-400">
+            <Star size={13} className="text-yellow-400 fill-yellow-400 icon-glow" />
           </div>
-          <h2 className="font-display text-base font-semibold text-white">Tính năng nổi bật</h2>
+          <h2 className="font-display text-base font-semibold text-white">
+            <span className="grad-anim">Tính năng nổi bật</span>
+          </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
           {FEATURES.map((f, i) => (
@@ -423,24 +445,38 @@ export default function Dashboard() {
       <div>
         <div className="flex items-center justify-between gap-2 mb-5">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-rose-500/20 border border-rose-500/30 flex items-center justify-center">
-              <MessageSquare size={13} className="text-rose-400" />
+            <div className="w-7 h-7 rounded-lg bg-rose-500/20 border border-rose-500/30 flex items-center justify-center pulse-ring text-rose-400">
+              <MessageSquare size={13} className="icon-glow" />
             </div>
-            <h2 className="font-display text-base font-semibold text-white">Đánh giá từ cộng đồng</h2>
+            <h2 className="font-display text-base font-semibold text-white">
+              <span className="grad-anim">Đánh giá từ cộng đồng</span>
+            </h2>
           </div>
-          {user && (
-            <button
-              onClick={() => setShowReviewForm(v => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+          <div className="flex items-center gap-2">
+            <Link to="/reviews"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all under-anim"
               style={{
-                background: showReviewForm ? 'rgba(239,68,68,0.12)' : 'rgba(110,75,255,0.12)',
-                border: showReviewForm ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(110,75,255,0.3)',
-                color: showReviewForm ? 'rgba(252,165,165,1)' : 'rgba(167,139,250,1)',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                color: 'rgba(255,255,255,0.7)',
               }}>
-              <MessageSquare size={12} />
-              {showReviewForm ? 'Hủy' : 'Viết đánh giá'}
-            </button>
-          )}
+              Xem tất cả
+              <ArrowRight size={12} />
+            </Link>
+            {user && (
+              <button
+                onClick={() => setShowReviewForm(v => !v)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+                style={{
+                  background: showReviewForm ? 'rgba(239,68,68,0.12)' : 'rgba(110,75,255,0.12)',
+                  border: showReviewForm ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(110,75,255,0.3)',
+                  color: showReviewForm ? 'rgba(252,165,165,1)' : 'rgba(167,139,250,1)',
+                }}>
+                <MessageSquare size={12} />
+                {showReviewForm ? 'Hủy' : 'Viết đánh giá'}
+              </button>
+            )}
+          </div>
         </div>
 
         {showReviewForm && user && (
@@ -541,6 +577,19 @@ export default function Dashboard() {
             </motion.div>
           ))}
         </div>
+
+        {/* View-all CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-5 flex justify-center">
+          <Link to="/reviews"
+            className="btn-neon inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white">
+            <MessageSquare size={14} />
+            Xem tất cả đánh giá từ cộng đồng làm đẹp xịn
+            <ArrowRight size={14} />
+          </Link>
+        </motion.div>
       </div>
 
       {/* ── Social proof ── */}

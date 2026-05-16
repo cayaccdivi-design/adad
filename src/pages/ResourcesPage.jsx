@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FolderOpen, Download, Heart, Eye, Filter, Grid3X3, List, Star, ExternalLink, Image, FileType, Box, Cpu, Layers } from 'lucide-react'
 import { useAppStore } from '../store/useAppStore'
+import PageGuide from '../components/ui/PageGuide'
 
 const CATEGORIES = [
   { value: 'all',      label: 'Tất cả',  icon: Grid3X3 },
@@ -156,13 +157,26 @@ export default function ResourcesPage() {
 
   return (
     <div className="space-y-6">
+      <PageGuide
+        id="resources"
+        title="Cách sử dụng kho tài nguyên"
+        subtitle="10,000+ asset miễn phí: PSD, icon, mockup, AI asset, ảnh nền — cập nhật hàng tuần."
+        tone="green"
+        steps={[
+          { icon: '📂', title: 'Chọn danh mục', desc: 'Lọc Ảnh / PSD / Icon / Mockup / AI Asset.' },
+          { icon: '🔄', title: 'Sắp xếp', desc: 'Theo phổ biến, mới nhất hoặc đánh giá cao nhất.' },
+          { icon: '👁️', title: 'Xem trước', desc: 'Hover để xem nhanh, đảm bảo phù hợp dự án.' },
+          { icon: '⬇️', title: 'Tải xuống', desc: 'Resource có gắn FREE thì tải miễn phí, còn lại cần Premium.' },
+        ]}
+      />
+
       {/* Header */}
       <div className="text-center space-y-2 mb-6">
         <div className="inline-flex items-center gap-2 badge mb-2">
           <FolderOpen size={13} /> Thư viện
         </div>
         <h1 className="font-display text-3xl font-bold text-white">
-          Kho <span className="grad">tài nguyên</span>
+          Kho <span className="grad-anim">tài nguyên</span>
         </h1>
         <p className="text-white/40 text-sm">Hàng nghìn ảnh, PSD, icon, mockup và AI asset miễn phí</p>
       </div>

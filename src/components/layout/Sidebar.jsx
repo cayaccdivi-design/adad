@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, ShoppingBag, Gift, Scissors,
   FolderOpen, LogOut, X, ChevronLeft, ChevronRight,
-  Sparkles, Zap, Layers, LayoutGrid
+  Sparkles, Zap, Layers, LayoutGrid, MessageSquare, Wrench
 } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useAppStore } from '../../store/useAppStore'
@@ -14,9 +14,11 @@ const NAV_ITEMS = [
   { to: '/shop',       icon: ShoppingBag,     label: 'Cửa hàng' },
   { to: '/gift',       icon: Gift,            label: 'Hộp quà',    badge: 'HOT' },
   { to: '/remove-bg',  icon: Scissors,        label: 'Xóa nền AI', badge: 'AI' },
-  { to: '/psd-editor', icon: Layers,          label: 'PSD Editor',  badge: 'NEW' },
-  { to: '/resources',  icon: FolderOpen,      label: 'Tài nguyên' },
   { to: '/collage',    icon: LayoutGrid,      label: 'Ghép ảnh',   badge: 'NEW' },
+  { to: '/tools',      icon: Wrench,          label: 'Công cụ',    badge: 'NEW' },
+  { to: '/psd-editor', icon: Layers,          label: 'PSD Editor', badge: 'NEW' },
+  { to: '/resources',  icon: FolderOpen,      label: 'Tài nguyên' },
+  { to: '/reviews',    icon: MessageSquare,   label: 'Đánh giá' },
 ]
 
 export default function Sidebar() {

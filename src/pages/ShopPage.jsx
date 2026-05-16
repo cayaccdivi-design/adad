@@ -6,6 +6,7 @@ import { useShopStore } from '../store/useShopStore'
 import { useAppStore } from '../store/useAppStore'
 import { useNavigate } from 'react-router-dom'
 import Modal from '../components/ui/Modal'
+import PageGuide from '../components/ui/PageGuide'
 
 /* ─── DATA ───────────────────────────────────────────────── */
 const PRODUCTS = [
@@ -755,6 +756,19 @@ export default function ShopPage() {
   return (
     <div className="space-y-6">
 
+      <PageGuide
+        id="shop"
+        title="Hướng dẫn mua sắm tại cửa hàng NOVA"
+        subtitle="Mọi sản phẩm sau khi mua sẽ được mở khóa vĩnh viễn và có thể chỉnh sửa trực tiếp trên web."
+        tone="purple"
+        steps={[
+          { icon: '🔍', title: 'Lọc & tìm kiếm', desc: 'Lọc theo danh mục, loại tĩnh/động hoặc tìm theo tên.' },
+          { icon: '👁️', title: 'Xem chi tiết', desc: 'Click vào sản phẩm để xem ảnh full và đánh giá.' },
+          { icon: '💰', title: 'Mua bằng số dư', desc: 'Bấm "Mua ngay" để trừ tiền từ ví. Số dư không đủ thì nạp thêm.' },
+          { icon: '✏️', title: 'Chỉnh sửa', desc: 'Sau khi sở hữu, mở editor để sửa text và màu sắc theo ý.' },
+        ]}
+      />
+
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
@@ -763,7 +777,7 @@ export default function ShopPage() {
             <ShoppingBag size={11} /> Cửa hàng
           </div>
           <h1 className="font-display text-2xl font-bold text-white">
-            Tài nguyên <span className="grad">thiết kế</span>
+            Tài nguyên <span className="grad-anim">thiết kế</span>
           </h1>
           <p className="text-sm text-white/35 mt-1">{filtered.length} sản phẩm</p>
         </div>

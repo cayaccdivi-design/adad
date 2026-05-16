@@ -507,36 +507,41 @@ export default function Dashboard() {
               key={r.id}
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 + 0.3, ease: [0.22, 0.8, 0.22, 1] }}
-              className="relative rounded-2xl p-4 flex flex-col gap-3 group hover:-translate-y-1 transition-all duration-300"
+              className="relative rounded-2xl p-5 flex flex-col gap-3 group hover:-translate-y-1 transition-all duration-300"
               style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.07)',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))',
+                border: '1px solid rgba(255,255,255,0.08)',
                 backdropFilter: 'blur(16px)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)',
               }}
             >
               {/* Top accent */}
-              <div className="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"
+              <div className="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl opacity-40 group-hover:opacity-100 transition-opacity"
                 style={{ background: `linear-gradient(90deg, transparent, ${r.color}, transparent)` }} />
-              {/* Stars */}
-              <div className="flex items-center gap-0.5">
-                {[...Array(5)].map((_, idx) => (
-                  <Star key={idx} size={11}
-                    className={idx < r.rating ? 'text-yellow-400 fill-yellow-400' : 'text-white/20'} />
-                ))}
-              </div>
-              {/* Review text */}
-              <p className="text-xs text-white/65 leading-relaxed flex-1">"{r.text}"</p>
-              {/* Footer */}
-              <div className="flex items-center gap-2 pt-1 border-t border-white/[0.06]">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                  style={{ background: `${r.color}25`, color: r.color, border: `1px solid ${r.color}40` }}>
+              {/* Header: avatar + name */}
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style={{ background: `${r.color}20`, color: r.color, border: `1px solid ${r.color}35` }}>
                   {r.avatar}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium text-white/80 truncate">{r.name}</p>
-                  <p className="text-[10px] text-white/35 truncate">{r.product} · {r.time}</p>
+                  <p className="text-xs font-semibold text-white/85 truncate">{r.name}</p>
+                  <p className="text-[10px] text-white/30 truncate">{r.product}</p>
                 </div>
+              </div>
+              {/* Stars */}
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, idx) => (
+                  <Star key={idx} size={12}
+                    className={idx < r.rating ? 'text-yellow-400 fill-yellow-400' : 'text-white/15'} />
+                ))}
+                <span className="text-[10px] text-white/30 ml-1.5">{r.rating}.0</span>
+              </div>
+              {/* Review text */}
+              <p className="text-[11px] text-white/55 leading-relaxed flex-1 line-clamp-3">"{r.text}"</p>
+              {/* Time */}
+              <div className="flex items-center gap-1 text-[9px] text-white/25 pt-1">
+                <Clock size={8} />{r.time}
               </div>
             </motion.div>
           ))}

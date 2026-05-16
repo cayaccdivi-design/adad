@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Stage, Layer, Image as KonvaImage, Text as KonvaText } from 'react-konva'
-import { Download, ArrowLeft, Type, Image as ImageIcon, Upload, User, Star, AlertCircle } from 'lucide-react'
+import { Download, ArrowLeft, Type, Image as ImageIcon, Upload, User, Star, AlertCircle, RotateCcw, Trash2 } from 'lucide-react'
 import { useShopStore } from '../store/useShopStore'
 import { useAppStore } from '../store/useAppStore'
 import { useAuthStore } from '../store/useAuthStore'
@@ -165,15 +165,23 @@ function FieldInput({ field, value, onChange, textStyle, onTextStyleChange }) {
                 border: '2px solid rgba(77,208,255,0.3)',
               }}
             />
-            <div className="min-w-0">
-              <p className="text-xs text-white/60">Anh da tai len</p>
-              <p className="text-[10px] text-white/30 mt-0.5">Click de thay doi</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-white/60">Ảnh đã tải lên</p>
+              <p className="text-[10px] text-white/30 mt-0.5">Click để thay đổi</p>
             </div>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onChange('') }}
+              className="p-1.5 rounded-lg text-rose-400/60 hover:text-rose-400 hover:bg-rose-500/10 transition-all flex-shrink-0"
+              title="Xóa ảnh đã tải"
+            >
+              <Trash2 size={12} />
+            </button>
           </div>
         ) : (
           <>
             <Upload size={18} className="text-cyan-400/60" />
-            <p className="text-xs text-white/40">Click de tai anh len</p>
+            <p className="text-xs text-white/40">Click để tải ảnh lên</p>
             <p className="text-[10px] text-white/25">PNG, JPG, WebP</p>
           </>
         )}
@@ -350,6 +358,19 @@ export default function CustomerEditorPage() {
     setOverrides(prev => ({ ...prev, [role]: { x, y } }))
   }, [])
 
+  // Reset ALL fields to default values
+  const resetAllFields = useCallback(() => {
+    if (!product?.editableFields) return
+    const init = {}
+    for (const f of product.editableFields) {
+      init[f.role] = f.defaultValue || ''
+    }
+    setCustomValues(init)
+    setOverrides({})
+    setTextStyles({})
+    setSelectedRole(null)
+  }, [product])
+
   const handleDownload = useCallback((force = false) => {
     // Payment gate — admin always free, regular users must pay
     if (!force && !isAdmin && !hasPaid) {
@@ -396,6 +417,7 @@ export default function CustomerEditorPage() {
       downloadDataUrl(dataUrl, 'png')
       toast('Đã tải về thành công!', 'success', 'Download')
     } catch (err) {
+      console.warn('[CustomerEditor] canvas export failed, downloading original', err)
       downloadOriginal()
     }
   }, [product, customValues, toast, isAdmin, hasPaid])
@@ -457,7 +479,18 @@ export default function CustomerEditorPage() {
           }}
         >
           <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-            <h2 className="text-xs font-semibold text-white/50 uppercase tracking-wider">Tuy chinh noi dung</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-semibold text-white/50 uppercase tracking-wider">Tuy chinh noi dung</h2>
+              {editableFields.length > 0 && Object.values(customValues).some(v => v && v !== '') && (
+                <button
+                  onClick={resetAllFields}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all text-rose-300/70 hover:text-rose-300 hover:bg-rose-500/10"
+                  title="Reset tất cả về mặc định"
+                >
+                  <RotateCcw size={10} /> Reset
+                </button>
+              )}
+            </div>
             {editableFields.length > 0 && (
               <p className="text-[10px] text-white/25 mt-0.5">{editableFields.length} truong co the chinh sua</p>
             )}

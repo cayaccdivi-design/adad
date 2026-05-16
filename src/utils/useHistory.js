@@ -9,6 +9,10 @@ export default function useHistory(initial, { limit = 50 } = {}) {
   const [state, setState] = useState(initial)
   const past   = useRef([])
   const future = useRef([])
+  // A counter state that forces re-render whenever undo/redo stacks change,
+  // so that `canUndo` / `canRedo` stay reactive.
+  const [, setTick] = useState(0)
+  const bump = () => setTick(t => t + 1)
 
   const set = useCallback((next, { commit = true } = {}) => {
     setState(prev => {
@@ -20,6 +24,7 @@ export default function useHistory(initial, { limit = 50 } = {}) {
       }
       return value
     })
+    if (commit) bump()
   }, [limit])
 
   const undo = useCallback(() => {
@@ -29,6 +34,7 @@ export default function useHistory(initial, { limit = 50 } = {}) {
       future.current.push(prev)
       return last
     })
+    bump()
   }, [])
 
   const redo = useCallback(() => {
@@ -38,12 +44,14 @@ export default function useHistory(initial, { limit = 50 } = {}) {
       past.current.push(prev)
       return next
     })
+    bump()
   }, [])
 
   const reset = useCallback((value) => {
     past.current.length = 0
     future.current.length = 0
     setState(value)
+    bump()
   }, [])
 
   return [state, set, {

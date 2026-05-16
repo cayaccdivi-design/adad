@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Psd from '@webtoon/psd'
 import {
   Upload, Layers, ZoomIn, ZoomOut, Maximize2,
-  Lock, Star, ChevronLeft, Loader, PanelLeft, PanelRight,
+  Lock, Unlock, Star, ChevronLeft, Loader, PanelLeft, PanelRight,
   Download, Store, ImagePlus, FileType, Image as ImageIcon,
-  Undo2, Redo2,
+  Undo2, Redo2, RotateCcw,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
@@ -656,6 +656,30 @@ export default function PsdEditorPage() {
     ))
   }, [setLayers])
 
+  // Lock ALL layers at once (bulk action from toolbar).
+  const lockAllLayers = useCallback(() => {
+    setLayers(prev => prev.map(l => ({ ...l, locked: true })))
+    toast('Đã khóa toàn bộ layer', 'success', 'Lock All')
+  }, [setLayers, toast])
+
+  // Unlock ALL layers at once (bulk action from toolbar).
+  const unlockAllLayers = useCallback(() => {
+    setLayers(prev => prev.map(l => ({ ...l, locked: false })))
+    toast('Đã mở khóa toàn bộ layer', 'success', 'Unlock All')
+  }, [setLayers, toast])
+
+  // Reset ALL layers to original state (undo all edits).
+  const resetAllLayers = useCallback(() => {
+    setLayers(prev => prev.map(l => ({
+      ...l,
+      isEdited: false,
+      textContent: l.originalTextContent ?? l.textContent,
+      dataUrl: l.originalDataUrl ?? l.dataUrl,
+      left: l.left, top: l.top, // keep position (already baked from PSD)
+    })))
+    toast('Đã reset toàn bộ layer về bản gốc', 'success', 'Reset All')
+  }, [setLayers, toast])
+
   // Inline rename from the layer panel.
   const renameLayer = useCallback((id, name) => {
     setLayers(prev => prev.map(l =>
@@ -826,7 +850,7 @@ export default function PsdEditorPage() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history, fitZoom, psdMeta])
+  }, [history, fitZoom, psdMeta, selectedLayerId, moveLayer])
 
   // ── Publish ────────────────────────────────────────────────────────────────
   const handlePublish = () => {
@@ -952,7 +976,7 @@ export default function PsdEditorPage() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 4rem)', background: '#0a0a10' }}>
+    <div className="flex flex-col -mx-4 sm:-mx-6 -my-6" style={{ height: 'calc(100vh - 4rem)', background: '#0a0a10' }}>
       <Toolbar
         psdFile={psdFile}
         psdMeta={psdMeta}
@@ -1038,6 +1062,34 @@ export default function PsdEditorPage() {
                     <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Layers</span>
                     <span className="text-[10px] text-white/30">{layers.length}</span>
                   </div>
+                  {/* Bulk actions bar */}
+                  {layers.length > 0 && (
+                    <div className="px-2 py-1.5 flex items-center gap-1 flex-wrap"
+                      style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <button
+                        onClick={lockAllLayers}
+                        className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all text-amber-300/70 hover:text-amber-300 hover:bg-amber-500/10"
+                        title="Khóa toàn bộ layer"
+                      >
+                        <Lock size={10} /> Khóa hết
+                      </button>
+                      <button
+                        onClick={unlockAllLayers}
+                        className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all text-emerald-300/70 hover:text-emerald-300 hover:bg-emerald-500/10"
+                        title="Mở khóa toàn bộ layer"
+                      >
+                        <Unlock size={10} /> Mở hết
+                      </button>
+                      <div className="w-px h-3 bg-white/10" />
+                      <button
+                        onClick={resetAllLayers}
+                        className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all text-rose-300/70 hover:text-rose-300 hover:bg-rose-500/10"
+                        title="Reset tất cả layer về bản gốc"
+                      >
+                        <RotateCcw size={10} /> Reset hết
+                      </button>
+                    </div>
+                  )}
                   <div className="flex-1 overflow-y-auto p-1.5 space-y-0.5">
                     {layers.length === 0 && (
                       <p className="text-[11px] text-white/30 px-3 py-6 text-center">Chưa có layer.</p>

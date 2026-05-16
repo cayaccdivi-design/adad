@@ -39,7 +39,7 @@ const GIFT_ITEMS = [
     value: 'VIP',
     color: 'from-amber-600 to-orange-400',
     icon: Crown,
-    expiry: '31/03/2026',
+    expiry: '31/12/2026',
     condition: 'Tài khoản mới',
   },
   {

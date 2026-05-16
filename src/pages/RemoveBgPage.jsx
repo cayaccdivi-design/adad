@@ -4,29 +4,39 @@ import { Upload, Image, Download, Trash2, Scissors, Loader, Sparkles, AlertCircl
 import { useAppStore } from '../store/useAppStore'
 
 async function removeBg(imageFile) {
-  // Dynamically load from CDN to avoid bundling the heavy WASM
+  // Client-side background removal demo.
+  // In production this would call a server API.  For the demo we simulate
+  // processing by drawing the image onto a canvas and returning it as-is
+  // (the real @imgly library requires WASM which may fail to load in
+  // restricted environments).
   try {
+    // Attempt dynamic import of @imgly/background-removal if available
+    if (window.imglyBackgroundRemoval) {
+      const blob = await window.imglyBackgroundRemoval.removeBackground(imageFile)
+      return URL.createObjectURL(blob)
+    }
+    // Try to load from CDN
     const scriptId = 'imgly-bg-removal'
-    if (!window.__imglyBgRemoval) {
+    if (!document.getElementById(scriptId)) {
       await new Promise((resolve, reject) => {
-        if (document.getElementById(scriptId)) { resolve(); return }
         const s = document.createElement('script')
         s.id = scriptId
         s.type = 'module'
         s.src = 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser/index.js'
-        s.onload = resolve; s.onerror = reject
+        s.onload = resolve
+        s.onerror = reject
         document.head.appendChild(s)
       })
+      // Give module time to init
+      await new Promise(r => setTimeout(r, 1500))
     }
-    // Give module time to init
-    await new Promise(r => setTimeout(r, 500))
     if (window.imglyBackgroundRemoval) {
       const blob = await window.imglyBackgroundRemoval.removeBackground(imageFile)
       return URL.createObjectURL(blob)
     }
     throw new Error('Module not loaded')
   } catch {
-    // Demo fallback: simulate processing and return original
+    // Demo fallback: simulate processing and return original image
     await new Promise(r => setTimeout(r, 2000))
     return URL.createObjectURL(imageFile)
   }

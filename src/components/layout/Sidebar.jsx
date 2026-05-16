@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, ShoppingBag, Gift, Scissors,
   FolderOpen, LogOut, X, ChevronLeft, ChevronRight,
-  Sparkles, Zap, Layers, LayoutGrid
+  Sparkles, Zap, Layers, LayoutGrid, Bell, Code2, BookOpen
 } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useAppStore } from '../../store/useAppStore'
@@ -14,9 +14,12 @@ const NAV_ITEMS = [
   { to: '/shop',       icon: ShoppingBag,     label: 'Cửa hàng' },
   { to: '/gift',       icon: Gift,            label: 'Hộp quà',    badge: 'HOT' },
   { to: '/remove-bg',  icon: Scissors,        label: 'Xóa nền AI', badge: 'AI' },
-  { to: '/psd-editor', icon: Layers,          label: 'PSD Editor',  badge: 'NEW' },
-  { to: '/resources',  icon: FolderOpen,      label: 'Tài nguyên' },
+  { to: '/psd-editor', icon: Layers,          label: 'PSD Editor',  badge: 'NEW', adminOnly: true },
   { to: '/collage',    icon: LayoutGrid,      label: 'Ghép ảnh',   badge: 'NEW' },
+  { to: '/resources',  icon: FolderOpen,      label: 'Tài nguyên' },
+  { to: '/intro',      icon: BookOpen,        label: 'Giới thiệu' },
+  { to: '/announcements', icon: Bell,         label: 'Thông báo' },
+  { to: '/source',     icon: Code2,           label: 'Mã nguồn' },
 ]
 
 export default function Sidebar() {
@@ -66,8 +69,8 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-        {NAV_ITEMS.map(({ to, icon: Icon, label, badge, end }) => {
-          if (to === '/psd-editor' && !isAdmin) return null
+        {NAV_ITEMS.map(({ to, icon: Icon, label, badge, end, adminOnly }) => {
+          if (adminOnly && !isAdmin) return null
           return (
           <NavLink key={to} to={to} end={end}
             onClick={() => mobile && setMobileSidebarOpen(false)}

@@ -10,6 +10,9 @@ import ResourcesPage from './pages/ResourcesPage'
 import TopupPage from './pages/TopupPage'
 import CustomerEditorPage from './pages/CustomerEditorPage'
 import CollagePage from './pages/CollagePage'
+import IntroPage from './pages/IntroPage'
+import AnnouncementsPage from './pages/AnnouncementsPage'
+import SourcePage from './pages/SourcePage'
 import { useAuthStore } from './store/useAuthStore'
 
 function ProtectedRoute({ children }) {
@@ -30,9 +33,10 @@ export default function App() {
         <Route path="/psd-editor" element={<ProtectedRoute><PsdEditorPage /></ProtectedRoute>} />
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/collage" element={<ProtectedRoute><CollagePage /></ProtectedRoute>} />
-        <Route path="/topup" element={
-          <ProtectedRoute><TopupPage /></ProtectedRoute>
-        } />
+        <Route path="/topup" element={<ProtectedRoute><TopupPage /></ProtectedRoute>} />
+        <Route path="/intro" element={<IntroPage />} />
+        <Route path="/announcements" element={<AnnouncementsPage />} />
+        <Route path="/source" element={<SourcePage />} />
       </Route>
       <Route path="/editor/:productId" element={<ProtectedRoute><CustomerEditorPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Upload, Download, Image, LayoutGrid, X, Trash2 } from 'lucide-react'
+import { Upload, Download, Image, LayoutGrid, X, Trash2, Bot, Send } from 'lucide-react'
 import clsx from 'clsx'
 
 const LAYOUTS = [
@@ -28,6 +28,107 @@ function drawCover(ctx, img, x, y, w, h, r) {
   ctx.clip()
   ctx.drawImage(img, sx, sy, sw, sh)
   ctx.restore()
+}
+
+// ── AI Bot for Collage suggestions ──────────────────────────────────────────
+const BOT_SUGGESTIONS = [
+  { q: 'Gợi ý bố cục đẹp', answer: 'Với 2 ảnh nên dùng "2 ngang" cho ảnh ngang, "2 dọc" cho portrait. 4 ảnh thì "4 lưới" luôn cân đối!' },
+  { q: 'Màu nền phù hợp', answer: 'Tone tối (#0a0a14, #1a1a2e) cho ảnh sáng. Tone trắng (#f8fafc) nếu muốn collage nhẹ nhàng, minimal.' },
+  { q: 'Khoảng cách bao nhiêu?', answer: 'Gap 4-8px cho look hiện đại. Gap 0 nếu muốn ảnh nối liền. Gap 12+ cho phong cách magazine.' },
+  { q: 'Bo góc bao nhiêu?', answer: 'Radius 8-12px cho soft modern. Radius 0 cho look sharp. Radius 16+ cho phong cách bubble cute.' },
+]
+
+function CollageBot({ images, layout, onSetLayout, onSetGap, onSetRadius, onSetBgColor, layouts }) {
+  const [messages, setMessages] = useState([
+    { role: 'bot', text: 'Xin chào! Mình là bot AI gợi ý. Bạn muốn hỏi gì về collage?' }
+  ])
+  const [input, setInput] = useState('')
+  const scrollRef = useRef(null)
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+  }, [messages])
+
+  const handleSend = () => {
+    if (!input.trim()) return
+    const userMsg = input.trim()
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }])
+    setInput('')
+
+    // Simple keyword matching bot
+    setTimeout(() => {
+      let reply = 'Mình chưa hiểu lắm. Thử hỏi về bố cục, màu nền, khoảng cách hoặc bo góc nhé!'
+      const lower = userMsg.toLowerCase()
+
+      if (lower.includes('bố cục') || lower.includes('layout')) {
+        if (images.length <= 2) reply = `Bạn có ${images.length} ảnh — thử "2 ngang" hoặc "2 dọc" nhé! Mình đã chọn cho bạn.`
+        else if (images.length <= 4) reply = 'Với số ảnh này, "4 lưới" hoặc "1+2" sẽ rất đẹp! Đã áp dụng "4 lưới".'
+        else reply = '6+ ảnh thì "3 ngang" kết hợp nhiều row sẽ ổn. Thử "3 ngang" nhé!'
+        // Auto-apply
+        if (images.length <= 2) onSetLayout(layouts.find(l => l.id === 'h2'))
+        else if (images.length <= 4) onSetLayout(layouts.find(l => l.id === 'g4'))
+        else onSetLayout(layouts.find(l => l.id === 'h3'))
+      } else if (lower.includes('màu') || lower.includes('color') || lower.includes('nền')) {
+        reply = 'Gợi ý: #0a0a14 (dark), #1e1b4b (navy), #fef3c7 (warm cream). Đã đổi sang dark tone!'
+        onSetBgColor('#0a0a14')
+      } else if (lower.includes('gap') || lower.includes('khoảng cách') || lower.includes('cách')) {
+        reply = 'Gap 6px là lựa chọn phổ biến, vừa thoáng vừa gọn. Đã áp dụng!'
+        onSetGap(6)
+      } else if (lower.includes('bo góc') || lower.includes('radius') || lower.includes('góc')) {
+        reply = 'Bo góc 10px cho hiện đại, 0 cho sharp. Mình set 10px cho bạn!'
+        onSetRadius(10)
+      } else {
+        // Check predefined
+        const match = BOT_SUGGESTIONS.find(s => lower.includes(s.q.toLowerCase().split(' ')[0]))
+        if (match) reply = match.answer
+      }
+      setMessages(prev => [...prev, { role: 'bot', text: reply }])
+    }, 600)
+  }
+
+  return (
+    <div className="space-y-2">
+      {/* Quick suggestions */}
+      <div className="flex flex-wrap gap-1 mb-2">
+        {BOT_SUGGESTIONS.map((s, i) => (
+          <button key={i}
+            onClick={() => { setInput(s.q); }}
+            className="text-[9px] px-2 py-0.5 rounded-full transition-all text-brand-300/80 hover:text-brand-200"
+            style={{ background: 'rgba(110,75,255,0.1)', border: '1px solid rgba(110,75,255,0.2)' }}>
+            {s.q}
+          </button>
+        ))}
+      </div>
+      {/* Chat messages */}
+      <div ref={scrollRef} className="max-h-32 overflow-y-auto space-y-1.5 mb-2">
+        {messages.map((m, i) => (
+          <div key={i} className={clsx('text-[11px] px-2.5 py-1.5 rounded-xl max-w-[90%]',
+            m.role === 'bot'
+              ? 'bg-white/[0.04] text-white/70 border border-white/[0.06]'
+              : 'bg-brand-500/20 text-brand-200 ml-auto')}>
+            {m.role === 'bot' && <Bot size={9} className="inline mr-1 text-brand-300" />}
+            {m.text}
+          </div>
+        ))}
+      </div>
+      {/* Input */}
+      <div className="flex gap-1.5">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleSend()}
+          placeholder="Hỏi AI gợi ý..."
+          className="flex-1 text-[11px] rounded-lg px-2.5 py-1.5 text-white/70 outline-none"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+        />
+        <button onClick={handleSend}
+          className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+          style={{ background: input.trim() ? 'rgba(110,75,255,0.3)' : 'rgba(255,255,255,0.05)' }}>
+          <Send size={11} className={input.trim() ? 'text-brand-200' : 'text-white/30'} />
+        </button>
+      </div>
+    </div>
+  )
 }
 
 export default function CollagePage() {
@@ -373,6 +474,32 @@ export default function CollagePage() {
                 />
               </div>
             </div>
+          </motion.div>
+
+          {/* AI Bot Assistant */}
+          <motion.div
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            style={glassPanel}
+            className="p-4"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+                style={{ background: 'rgba(110,75,255,0.2)', border: '1px solid rgba(110,75,255,0.35)' }}>
+                <Bot size={12} className="text-brand-300" />
+              </div>
+              <p className="text-xs text-white/50 font-medium">AI Gợi ý</p>
+            </div>
+            <CollageBot
+              images={images}
+              layout={layout}
+              onSetLayout={setLayout}
+              onSetGap={setGap}
+              onSetRadius={setRadius}
+              onSetBgColor={setBgColor}
+              layouts={LAYOUTS}
+            />
           </motion.div>
         </div>
       </div>

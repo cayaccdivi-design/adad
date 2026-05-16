@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ShoppingBag, Gift, Scissors, FolderOpen, Layers,
   Coins, ArrowRight, Zap, Star, Sparkles,
   Download, TrendingUp, LayoutDashboard, Wrench,
   Clock, Activity, CheckCircle2, LayoutGrid, MessageSquare,
+  Github, Code2, Copy, CheckCheck, ExternalLink,
+  Heart, Users, Target, Rocket, BookOpen, GitBranch,
 } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
 import { useAppStore } from '../store/useAppStore'
@@ -116,42 +118,247 @@ function QuickCard({ to, icon: Icon, label, desc, gradient, badge }) {
   )
 }
 
-/* ─── Feature Card ───────────────────────────────────────── */
-function FeatureCard({ icon, title, desc, delay, link, accent }) {
-  const Wrapper = link ? Link : 'div'
-  const accentRgb = accent || '#6e4bff'
+/* ─── Source Code Section ──────────────────────────────────── */
+const TECH_STACK = [
+  { name: 'React 18',         category: 'Framework',   color: '#61dafb', desc: 'UI library với hooks & concurrent features' },
+  { name: 'Vite 5',           category: 'Build',       color: '#646cff', desc: 'Build tool siêu nhanh, hot reload tức thì' },
+  { name: 'TailwindCSS 3',    category: 'Styling',     color: '#06b6d4', desc: 'Utility-first CSS, dark mode native' },
+  { name: 'Framer Motion',    category: 'Animation',   color: '#ec4899', desc: 'Hiệu ứng mượt mà, spring physics' },
+  { name: 'Zustand',          category: 'State',       color: '#f59e0b', desc: 'State management nhẹ, không boilerplate' },
+  { name: 'React Konva',      category: 'Canvas',      color: '#8b5cf6', desc: 'Canvas 2D engine cho PSD editor' },
+  { name: 'Lucide Icons',     category: 'Icons',       color: '#10b981', desc: 'Icon set hiện đại, 1400+ icons' },
+  { name: '@imgly/bg-removal',category: 'AI',          color: '#0ea5e9', desc: 'AI tách nền chạy WASM trên trình duyệt' },
+]
+
+const FILE_TREE = `adad/
+├── src/
+│   ├── App.jsx                  # Root + routing
+│   ├── main.jsx                 # Vite entry
+│   ├── index.css                # Tailwind + custom CSS
+│   ├── components/
+│   │   ├── layout/              # Layout, Sidebar, Topbar
+│   │   ├── psd/                 # PSD canvas + properties
+│   │   └── ui/                  # PageGuide, Modal, Toast...
+│   ├── pages/                   # 12 pages (Dashboard, Shop, Tools...)
+│   ├── store/                   # Zustand stores (auth, app, shop)
+│   └── utils/                   # confetti, fontManager, psdTree...
+├── package.json                 # Dependencies
+├── vite.config.js               # Build config
+└── tailwind.config.js           # Theme config`
+
+function SourceCodeSection() {
+  const [copied, setCopied] = useState(null)
+  const repoUrl = 'https://github.com/cayaccdivi-design/adad'
+
+  const copy = (text, key) => {
+    navigator.clipboard?.writeText(text).then(() => {
+      setCopied(key)
+      setTimeout(() => setCopied(null), 2000)
+    })
+  }
+
+  const installCmd = `git clone ${repoUrl}.git\ncd adad\nnpm install\nnpm run dev`
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, ease: [0.22, 0.8, 0.22, 1] }}
-      className="h-full">
-      <Wrapper to={link}
-        className="relative overflow-hidden rounded-2xl p-5 flex flex-col gap-3 group transition-all duration-300 hover:-translate-y-1 block h-full"
+    <div className="grid lg:grid-cols-3 gap-4">
+      {/* GitHub repo card */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-2xl p-5 flex flex-col gap-3"
+        style={{
+          background: 'linear-gradient(135deg, rgba(110,75,255,0.1), rgba(0,0,0,0.3))',
+          border: '1px solid rgba(255,255,255,0.1)',
+          backdropFilter: 'blur(16px)',
+        }}>
+        <div className="absolute -right-12 -bottom-12 w-44 h-44 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(110,75,255,0.18), transparent 70%)' }} />
+
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Github size={18} className="text-white" />
+            </div>
+            <div>
+              <p className="text-xs text-white/40">GitHub Repo</p>
+              <p className="text-sm font-mono font-semibold text-white">cayaccdivi-design/adad</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {[
+              { label: 'Stars',  value: '★ 142', color: '#facc15' },
+              { label: 'Forks',  value: '⑂ 28',  color: '#0ea5e9' },
+              { label: 'Issues', value: '◉ 6',   color: '#10b981' },
+            ].map(s => (
+              <div key={s.label} className="text-center p-2 rounded-lg"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <p className="text-sm font-bold" style={{ color: s.color }}>{s.value}</p>
+                <p className="text-[9px] text-white/35 uppercase tracking-wider mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <a href={repoUrl} target="_blank" rel="noopener noreferrer"
+            className="btn-neon w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white">
+            <Github size={13} /> Xem trên GitHub
+            <ExternalLink size={11} />
+          </a>
+
+          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/30">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Cập nhật build tự động qua Kiro AI</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Tech stack */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="lg:col-span-2 rounded-2xl p-5"
         style={{
           background: 'rgba(255,255,255,0.03)',
           border: '1px solid rgba(255,255,255,0.07)',
           backdropFilter: 'blur(16px)',
         }}>
-        {/* top accent line */}
-        <div className="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ background: `linear-gradient(90deg, transparent, ${accentRgb}, transparent)` }} />
-        {/* hover shimmer */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
-          style={{ background: `linear-gradient(135deg, ${accentRgb}12, transparent 60%)` }} />
-        <div className="relative flex flex-col gap-3 flex-1">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl text-2xl select-none"
-            style={{
-              background: `${accentRgb}18`,
-              border: `1px solid ${accentRgb}35`,
-              backdropFilter: 'blur(8px)',
-            }}>{icon}</div>
-          <div>
-            <h3 className="font-semibold text-white text-sm mb-1">{title}</h3>
-            <p className="text-xs text-white/45 leading-relaxed">{desc}</p>
+        <p className="text-xs text-white/40 uppercase tracking-widest mb-3 flex items-center gap-2">
+          <Layers size={11} /> Tech Stack
+        </p>
+        <div className="grid sm:grid-cols-2 gap-2">
+          {TECH_STACK.map((t, i) => (
+            <motion.div key={t.name}
+              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.04 }}
+              className="flex items-center gap-2.5 p-2 rounded-xl group hover:bg-white/[0.03] transition-all">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold"
+                style={{ background: `${t.color}20`, color: t.color, border: `1px solid ${t.color}40` }}>
+                {t.name.charAt(0)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <p className="text-xs font-semibold text-white truncate">{t.name}</p>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-md font-medium"
+                    style={{ background: `${t.color}15`, color: t.color }}>
+                    {t.category}
+                  </span>
+                </div>
+                <p className="text-[10px] text-white/40 truncate mt-0.5">{t.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* File tree */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="rounded-2xl overflow-hidden flex flex-col"
+        style={{
+          background: 'rgba(0,0,0,0.4)',
+          border: '1px solid rgba(255,255,255,0.07)',
+        }}>
+        <div className="flex items-center justify-between px-4 py-2.5 border-b"
+          style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-400/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/70" />
+            </div>
+            <span className="text-[10px] text-white/40 font-mono ml-1">project structure</span>
+          </div>
+          <button onClick={() => copy(FILE_TREE, 'tree')}
+            className="text-white/40 hover:text-white p-1 rounded transition-all">
+            {copied === 'tree' ? <CheckCheck size={12} className="text-emerald-400" /> : <Copy size={12} />}
+          </button>
+        </div>
+        <pre className="flex-1 px-4 py-3 text-[11px] text-white/65 font-mono leading-relaxed overflow-x-auto whitespace-pre">{FILE_TREE}</pre>
+      </motion.div>
+
+      {/* Install commands */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="lg:col-span-2 rounded-2xl overflow-hidden"
+        style={{
+          background: 'rgba(0,0,0,0.4)',
+          border: '1px solid rgba(255,255,255,0.07)',
+        }}>
+        <div className="flex items-center justify-between px-4 py-2.5 border-b"
+          style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-400/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/70" />
+            </div>
+            <span className="text-[10px] text-white/40 font-mono ml-1">terminal — chạy local</span>
+          </div>
+          <button onClick={() => copy(installCmd, 'install')}
+            className="flex items-center gap-1 text-[10px] text-white/50 hover:text-white px-2 py-0.5 rounded transition-all"
+            style={{ background: 'rgba(255,255,255,0.05)' }}>
+            {copied === 'install' ? <><CheckCheck size={11} className="text-emerald-400" /> Đã sao chép</> : <><Copy size={11} /> Sao chép</>}
+          </button>
+        </div>
+        <div className="p-4 space-y-1 font-mono text-xs leading-relaxed">
+          {installCmd.split('\n').map((line, i) => (
+            <div key={i} className="flex gap-3">
+              <span className="text-white/25 select-none w-4 text-right">{i + 1}</span>
+              <span className="text-emerald-400/70">$</span>
+              <span className="text-white/85">{line}</span>
+            </div>
+          ))}
+          <div className="flex gap-3 pt-2 mt-2 border-t border-white/[0.06]">
+            <span className="text-white/25 w-4 text-right">→</span>
+            <span className="text-cyan-400/70">i</span>
+            <span className="text-white/45 italic">Local: http://localhost:5173</span>
           </div>
         </div>
-      </Wrapper>
-    </motion.div>
+      </motion.div>
+
+      {/* CTA — contribute */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="lg:col-span-3 relative overflow-hidden rounded-2xl p-5"
+        style={{
+          background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.06))',
+          border: '1px solid rgba(16,185,129,0.25)',
+        }}>
+        <div className="absolute -right-16 -top-16 w-44 h-44 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.25), transparent 70%)' }} />
+
+        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 pulse-ring text-emerald-400"
+              style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.4)' }}>
+              <Users size={18} className="icon-glow" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-white mb-0.5">Đóng góp cho dự án</p>
+              <p className="text-xs text-white/55 leading-relaxed">
+                NOVA AI Studio là <span className="text-emerald-300 font-medium">open source</span> — fork repo, gửi PR và cùng xây dựng.
+                Mọi đóng góp đều được ghi nhận trên trang Contributors.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2 flex-shrink-0">
+            <a href={`${repoUrl}/issues`} target="_blank" rel="noopener noreferrer"
+              className="px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.75)' }}>
+              <span>🐛</span> Issues
+            </a>
+            <a href={`${repoUrl}/fork`} target="_blank" rel="noopener noreferrer"
+              className="px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 text-white"
+              style={{ background: 'linear-gradient(135deg, #10b981, #06b6d4)' }}>
+              <GitBranch size={12} /> Fork repo
+            </a>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   )
 }
 
@@ -164,13 +371,6 @@ const QUICK_ACTIONS = [
   { to: '/tools',      icon: Wrench,      label: 'Công cụ',    desc: '8 tools tiện ích miễn phí cho designer', gradient: 'linear-gradient(135deg,#06b6d4,#10b981)', badge: 'NEW' },
   { to: '/psd-editor', icon: Layers,      label: 'PSD Editor', desc: 'Chỉnh sửa PSD trực tiếp trên web',   gradient: 'linear-gradient(135deg,#f59e0b,#ef4444)', badge: 'NEW', adminOnly: true },
   { to: '/resources',  icon: FolderOpen,  label: 'Tài nguyên', desc: '10,000+ PSD, icon, mockup miễn phí', gradient: 'linear-gradient(135deg,#8b5cf6,#7c3aed)', badge: null       },
-]
-
-const FEATURES = [
-  { icon: '🛍️', title: 'Cửa hàng thiết kế',  desc: 'Mua thumbnail, logo, banner PSD chất lượng cao. Chỉnh sửa trực tiếp trên web sau khi mua.',  link: '/shop',       accent: '#6e4bff' },
-  { icon: '✂️',  title: 'Xóa nền tự động',    desc: 'Tách nền ảnh chỉ trong 1 giây. Hỗ trợ PNG, JPG. Không cần Photoshop.',                       link: '/remove-bg',  accent: '#0ea5e9' },
-  { icon: '📦',  title: 'Kho tài nguyên',      desc: '10,000+ file PSD, icon, mockup miễn phí. Tải về và dùng ngay cho dự án của bạn.',             link: '/resources',  accent: '#8b5cf6' },
-  { icon: '🖼️', title: 'Ghép ảnh Collage',   desc: 'Ghép nhiều ảnh thành collage đẹp với nhiều bố cục. Tải về PNG chất lượng cao ngay lập tức.',   link: '/collage',    accent: '#ec4899' },
 ]
 
 const REVIEWS = [
@@ -424,21 +624,119 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
-      {/* ── Features ── */}
+      {/* ── Intro: About NOVA AI Studio ── */}
       <div>
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-7 h-7 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center pulse-ring text-yellow-400">
-            <Star size={13} className="text-yellow-400 fill-yellow-400 icon-glow" />
+          <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center pulse-ring text-cyan-400">
+            <BookOpen size={13} className="icon-glow" />
           </div>
           <h2 className="font-display text-base font-semibold text-white">
-            <span className="grad-anim">Tính năng nổi bật</span>
+            <span className="grad-anim">Giới thiệu NOVA AI Studio</span>
           </h2>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
-          {FEATURES.map((f, i) => (
-            <FeatureCard key={f.title} {...f} delay={i * 0.08 + 0.25} />
-          ))}
+
+        <div className="grid lg:grid-cols-3 gap-4">
+          {/* Big intro card */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            className="lg:col-span-2 relative overflow-hidden rounded-2xl p-6 flex flex-col gap-4"
+            style={{
+              background: 'linear-gradient(135deg, rgba(110,75,255,0.12), rgba(77,208,255,0.06))',
+              border: '1px solid rgba(110,75,255,0.2)',
+              backdropFilter: 'blur(24px)',
+            }}>
+            {/* Decorative orbs */}
+            <div className="absolute -right-20 -top-20 w-60 h-60 rounded-full pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(110,75,255,0.25) 0%, transparent 70%)' }} />
+            <div className="absolute -left-12 -bottom-12 w-44 h-44 rounded-full pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(77,208,255,0.18) 0%, transparent 70%)' }} />
+            <div className="absolute inset-0 bg-particles opacity-30 pointer-events-none" />
+
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold chip-glow"
+                  style={{ background: 'rgba(110,75,255,0.2)', color: '#a78bfa', border: '1px solid rgba(110,75,255,0.4)' }}>
+                  <Sparkles size={10} /> NOVA AI STUDIO v1.0
+                </span>
+                <span className="text-[10px] text-white/35">Cập nhật {new Date().toLocaleDateString('vi-VN')}</span>
+              </div>
+
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-white mb-3 leading-tight">
+                <span className="grad-anim">Studio thiết kế đa năng</span><br />
+                cho người Việt
+              </h3>
+
+              <p className="text-sm text-white/60 leading-relaxed mb-4">
+                NOVA là nền tảng <span className="text-brand-300 font-medium">All-in-One</span> cho designer, content creator và shop online —
+                kết hợp <span className="text-cyan-300 font-medium">AI tools</span>, <span className="text-emerald-300 font-medium">marketplace</span> tài nguyên,
+                và bộ <span className="text-pink-300 font-medium">tiện ích</span> chạy ngay trên trình duyệt.
+                Không cần cài Photoshop, không cần đăng ký phức tạp — bạn có thể bắt đầu sáng tạo sau 30 giây.
+              </p>
+
+              <div className="grid sm:grid-cols-2 gap-2.5">
+                {[
+                  { icon: '🎨', text: 'PSD Editor giống Photoshop, chạy trên web' },
+                  { icon: '🤖', text: 'AI tách nền, gen palette, generator QR' },
+                  { icon: '🛍️', text: 'Marketplace 120+ template chỉnh sửa được' },
+                  { icon: '📦', text: '10,000+ asset miễn phí cập nhật hàng tuần' },
+                ].map(f => (
+                  <div key={f.text} className="flex items-center gap-2 text-xs text-white/65">
+                    <span className="text-base">{f.icon}</span>
+                    <span>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Mission + values stack */}
+          <div className="space-y-3">
+            {[
+              { icon: Target,  color: '#ec4899', title: 'Sứ mệnh',     desc: 'Đem công cụ thiết kế chuyên nghiệp đến mọi người Việt — miễn phí và dễ dùng.' },
+              { icon: Rocket,  color: '#f59e0b', title: 'Tốc độ',      desc: 'Mọi tool đều load < 2s. AI xử lý dưới 5s. Không chờ đợi, không lag.' },
+              { icon: Heart,   color: '#10b981', title: 'Cộng đồng',   desc: '50,000+ designer Việt đang dùng và đóng góp resource hàng ngày.' },
+            ].map((v, i) => (
+              <motion.div key={v.title}
+                initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="flex items-start gap-3 p-3.5 rounded-2xl tilt-3d"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  backdropFilter: 'blur(16px)',
+                }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${v.color}20`, border: `1px solid ${v.color}40`, color: v.color }}>
+                  <v.icon size={16} className="icon-glow" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-white mb-0.5">{v.title}</p>
+                  <p className="text-[11px] text-white/50 leading-relaxed">{v.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* ── Source Code ── */}
+      <div>
+        <div className="flex items-center justify-between gap-2 mb-5">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center pulse-ring text-emerald-400">
+              <Code2 size={13} className="icon-glow" />
+            </div>
+            <h2 className="font-display text-base font-semibold text-white">
+              <span className="grad-anim">Mã nguồn & công nghệ</span>
+            </h2>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold"
+            style={{ background: 'rgba(16,185,129,0.12)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.3)' }}>
+            <GitBranch size={10} /> OPEN SOURCE
+          </span>
+        </div>
+
+        <SourceCodeSection />
       </div>
 
       {/* ── Reviews ── */}
